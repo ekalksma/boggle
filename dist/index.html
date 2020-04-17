@@ -1,51 +1,9 @@
 <!doctype html>
 <html>
   <head>
-    <title>Getting Started</title>
-    <script src="https://unpkg.com/lodash@4.16.6"></script>
+    <title>Boggle</title>
 
-    <style>
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        /* 1rem = 10px */
-        font-size: 62.5%;
-      }
-
-      body {
-        margin: 0;
-        padding: 0;
-        background: #B49082;
-        user-select: none;
-      }
-
-      #board {
-        background: #07090F;
-        border: 5px solid #98473E;
-        width: 290px;
-        margin: 2rem auto;
-      }
-
-      .row {
-        background: #98473E;
-      }
-
-      .letter {
-        display: inline-block;
-        width: 6.4rem;
-        height: 6.4rem;
-        text-align: center;
-        line-height: 6.4rem;
-        color: #D6C3C9;
-        font-weight: bold;
-        font-size: 2.4rem;
-        margin: 0.2rem;
-        background: #07090F;
-        cursor: pointer;
-      }
-    </style>
+    <link rel="stylesheet" href="./style.css">
   </head>
   <body>
     <div class="container">
@@ -76,34 +34,6 @@
         </div>
       </div>
     </div>
-<!--
-    <tr id="boggle-pzl">
-      <td><table id=pzl cellspacing=0 cellpadding=0> <tr>
-   <td><input type='button' id='p0' name='p0' value='x' ></td>
-   <td><input type='button' id='p1' name='p1' value='x' ></td>
-   <td><input type='button' id='p2' name='p2' value='x' ></td>
-   <td><input type='button' id='p3' name='p3' value='x' ></td>
-      </tr>
-  <tr>
-   <td><input type='button' id='p4' name='p4' value='x' ></td>
-   <td><input type='button' id='p5' name='p5' value='x' ></td>
-   <td><input type='button' id='p6' name='p6' value='x' ></td>
-   <td><input type='button' id='p7' name='p7' value='x' ></td>
-  </tr>
-  <tr>
-   <td><input type='button' id='p8' name='p8' value='x' ></td>
-   <td><input type='button' id='p9' name='p9' value='x' ></td>
-   <td><input type='button' id='p10' name='p10' value='x' ></td>
-   <td><input type='button' id='p11' name='p11' value='x' ></td>
-  </tr>
-  <tr>
-   <td><input type='button' id='p12' name='p12' value='x' ></td>
-   <td><input type='button' id='p13' name='p13' value='x' ></td>
-   <td><input type='button' id='p14' name='p14' value='x' ></td>
-   <td><input type='button' id='p15' name='p15' value='x' ></td>
-  </tr>
- </table>
- </td> -->
 
     <script src="bundle.js"></script>
   </body>
