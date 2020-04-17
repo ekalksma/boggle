@@ -38,3 +38,23 @@ function drawBoard(board) {
 
 const board = getRandomBoard(dice);
 drawBoard(board);
+
+let word = [];
+let isMouseDown = false;
+
+$('#board .letter').mousedown(function () {
+  isMouseDown = true;
+  word.push($(this).text());
+});
+
+$('body').mouseup(function () {
+  isMouseDown = false;
+  console.log(word);
+  word = [];
+});
+
+$('#board .letter').mouseenter(function () {
+  if (isMouseDown) {
+    word.push($(this).text());
+  }
+});
