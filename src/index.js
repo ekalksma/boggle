@@ -21,11 +21,10 @@ class Boggle {
       ['P', 'A', 'C', 'E', 'M', 'D']
     ];
 
+    this.words = [];
     this.word = [];
     this.isMouseDown = false;
     const board = this.getRandomBoard(dice);
-
-    this.drawBoard(board);
 
     $('#board .letter').mousedown((event) => {
       this.isMouseDown = true;
@@ -34,8 +33,11 @@ class Boggle {
 
     $('body').mouseup(() => {
       this.isMouseDown = false;
-      console.log(this.word);
+      this.words.push(this.word);
+      console.log(this.words);
       this.word = [];
+
+      console.log(this.getTotalScore(this.words));
     });
 
     $('#board .letter').mouseenter((event) => {
@@ -43,6 +45,8 @@ class Boggle {
         this.word.push($(event.target).text());
       }
     });
+
+    this.drawBoard(board);
   }
 
   getRandomBoard(dice) {
@@ -60,6 +64,21 @@ class Boggle {
     $('#board .letter').each(function (index) {
       $(this).text(board[index]);
     });
+  }
+
+  getTotalScore(words) {
+    let score = 0;
+
+    for (const word of words) {
+      if (word.length >= 8) score += 11;
+      else if (word.length >= 7) score += 5;
+      else if (word.length >= 6) score += 3;
+      else if (word.length >= 5) score += 2;
+      else if (word.length >= 4) score += 1;
+      else if (word.length >= 3) score += 1;
+    }
+
+    return score;
   }
 }
 
