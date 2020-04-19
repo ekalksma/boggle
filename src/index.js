@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 class Boggle {
   constructor() {
-    const dice = [
+    this.dice = [
       ['R', 'I', 'F', 'O', 'B', 'X'],
       ['I', 'F', 'E', 'H', 'E', 'Y'],
       ['D', 'E', 'N', 'O', 'W', 'S'],
@@ -21,24 +21,12 @@ class Boggle {
       ['P', 'A', 'C', 'E', 'M', 'D']
     ];
 
-    this.words = [];
-    this.word = [];
-    this.isMouseDown = false;
-    const board = this.getRandomBoard(dice);
-
     $('#board .letter').mousedown((event) => {
       this.isMouseDown = true;
       this.word.push($(event.target).text());
     });
 
-    $('body').mouseup(() => {
-      this.isMouseDown = false;
-      this.words.push(this.word);
-      console.log(this.words);
-      this.word = [];
-
-      console.log(this.getTotalScore(this.words));
-    });
+    $('body').mouseup(this.onMouseUp.bind(this));
 
     $('#board .letter').mouseenter((event) => {
       if (this.isMouseDown) {
@@ -46,7 +34,46 @@ class Boggle {
       }
     });
 
+    this.gameDurationInSeconds = 2;
+
+    this.start();
+  }
+
+  start() {
+    this.reset();
+
+    this.play();
+  }
+
+  play() {
+    this.timeout = setTimeout(() => {
+      clearTimeout(this.timeout);
+
+      // empty words + scores
+      $('.scoreboard').children().remove();
+
+      // display score
+      console.log(this.getTotalScore());
+
+      // start new game
+      this.start();
+    }, this.gameDurationInSeconds * 1000);
+  }
+
+  reset() {
+    this.words = [];
+    this.word = [];
+    this.isMouseDown = false;
+
+    const board = this.getRandomBoard(this.dice);
     this.drawBoard(board);
+  }
+
+  onMouseUp() {
+    this.isMouseDown = false;
+    this.words.push(this.word);
+    this.AddWordToScoreboard(this.word);
+    this.word = [];
   }
 
   getRandomBoard(dice) {
@@ -66,19 +93,31 @@ class Boggle {
     });
   }
 
-  getTotalScore(words) {
+  getTotalScore() {
     let score = 0;
 
-    for (const word of words) {
-      if (word.length >= 8) score += 11;
-      else if (word.length >= 7) score += 5;
-      else if (word.length >= 6) score += 3;
-      else if (word.length >= 5) score += 2;
-      else if (word.length >= 4) score += 1;
-      else if (word.length >= 3) score += 1;
+    for (const word of this.words) {
+      score += this.getWordScore(word);
     }
 
     return score;
+  }
+
+  getWordScore(word) {
+    if (word.length >= 8) return 11;
+    else if (word.length >= 7) return 5;
+    else if (word.length >= 6) return 3;
+    else if (word.length >= 5) return 2;
+    else if (word.length >= 4) return 1;
+    else if (word.length >= 3) return 1;
+    else return 0;
+  }
+
+  AddWordToScoreboard(word) {
+    const score = this.getWordScore(word);
+
+    $('.scoreboard').append(`<div class= "word" >${word.join("")}</div>`);
+    $('.scoreboard').append(`<div class= "score" >${score}</div>`);
   }
 }
 

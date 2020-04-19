@@ -14,6 +14,11 @@ body {
   user-select: none;
 }
 
+.container {
+  width: 1000px;
+  margin: 0 auto;
+}
+
 #board {
   background: #07090F;
   border: 5px solid #98473E;
@@ -37,4 +42,36 @@ body {
   margin: 0.2rem;
   background: #07090F;
   cursor: pointer;
+}
+
+.scoreboard {
+  height: 26rem;
+  width: 19rem;
+  background-color: white;
+  margin: 2rem auto;
+  float: left;
+  overflow: hidden;
+}
+
+.word {
+  font-size: 2rem;
+  width: 75%;
+  color: red;
+  display: inline-block;
+  border-right: 2px solid red;
+  text-align: center;
+  padding: 5px;
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.score {
+  font-size: 2rem;
+  width: 25%;
+  color: red;
+  display: block;
+  float: right;
+  text-align: center;
+  line-height: 33px;
 }
