@@ -28,6 +28,7 @@ class Boggle {
     this.name = "Emiel";
     this.gameDurationInSeconds = 5;
     this.highScores = [];
+    this.selectedIndices = [];
     this.highScoresLimit = 8;
 
     this.start();
@@ -42,10 +43,9 @@ class Boggle {
   play() {
     this.timeout = setTimeout(() => {
       clearTimeout(this.timeout);
-      // display score
+
       this.AddScoreToHighscores(this.score);
 
-      // start new game
       this.start();
     }, this.gameDurationInSeconds * 1000);
   }
@@ -69,19 +69,34 @@ class Boggle {
       this.AddWordToScoreboard(this.word);
     }
 
+    this.selectedIndices = [];
     this.word = [];
   }
 
   onMouseDown(event) {
     this.isMouseDown = true;
-    this.word.push($(event.target).text());
-  }
 
-  onMouseEnter() {
-    if (this.isMouseDown) {
-      console.log($(event.target));
+    const index = $('.letter').index(event.currentTarget);
+
+    if (!this.isSelectedIndex(index)) {
+      this.selectedIndices.push(index);
       this.word.push($(event.target).text());
     }
+  }
+
+  onMouseEnter(event) {
+    if (this.isMouseDown) {
+      const index = $('.letter').index(event.currentTarget);
+
+      if (!this.isSelectedIndex(index)) {
+        this.selectedIndices.push(index);
+        this.word.push($(event.target).text());
+      }
+    }
+  }
+
+  isSelectedIndex(index) {
+    return this.selectedIndices.includes(index);
   }
 
   getRandomBoard(dice) {
@@ -136,7 +151,7 @@ class Boggle {
     this.highScores.push(score);
     this.highScores.sort((a, b) => {return b-a});
 
-    this.clearHighscoresElement()
+    this.clearHighscoresElement();
 
     for (let i = 0; i < this.highScoresLimit; i++) {
       $('.highscores').append(`<div class= "highscore-index" >${i+1}.</div>`);
