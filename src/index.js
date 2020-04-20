@@ -22,7 +22,8 @@ class Boggle {
     ];
 
     $('#board .letter').mousedown(this.onMouseDown.bind(this));
-    $('body').mouseup(this.onMouseUp.bind(this));
+    $('#board').mouseup(this.onMouseUp.bind(this));
+    $('#board').mouseleave(this.onMouseUp.bind(this));
     $('#board .letter').mouseenter(this.onMouseEnter.bind(this));
 
     this.name = "Emiel";
