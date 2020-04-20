@@ -65,8 +65,8 @@ class Boggle {
   onMouseUp() {
     this.isMouseDown = false;
 
-    if (this.isValidWordLength(this.word)) {
-      this.words.push(this.word);
+    if (this.isValidWord(this.word)) {
+      this.words.push(this.word.join(''));
       this.AddWordToScoreboard(this.word);
     }
 
@@ -133,8 +133,8 @@ class Boggle {
     return score;
   }
 
-  isValidWordLength(word) {
-    return word.length >= 3;
+  isValidWord(word) {
+    return word.length >= 3 && !this.words.includes(word.join(''));
   }
 
   getWordScore(word) {
