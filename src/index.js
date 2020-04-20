@@ -31,6 +31,7 @@ class Boggle {
     this.highScores = [];
     this.selectedIndices = [];
     this.highScoresLimit = 8;
+    this.fps = 60;
 
     this.start();
   }
@@ -42,8 +43,17 @@ class Boggle {
   }
 
   play() {
+    const currentTime = Date.now();
+    this.timeBar = setInterval(() => {
+      const elapsedTimeInSeconds = (Date.now() - currentTime) / 1000;
+      const width = 100 / this.gameDurationInSeconds * elapsedTimeInSeconds;
+
+      $('.time-bar').width(`${width}%`);
+    }, 1000 / this.fps);
+
     this.timeout = setTimeout(() => {
       clearTimeout(this.timeout);
+      clearTimeout(this.timeBar);
 
       this.AddScoreToHighscores(this.score);
 

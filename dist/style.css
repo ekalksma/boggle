@@ -128,4 +128,15 @@ body {
   line-height: 33px;
 }
 
+.timer {
+  height: 1.4rem;
+  width: 100%;
+  border: 2px solid #07090F;
+}
+
+.time-bar {
+  background: rgb(48, 55, 75);
+  height: 1rem;
+  width: 0%;
+}
 
