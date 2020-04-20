@@ -71,6 +71,8 @@ class Boggle {
 
     this.selectedIndices = [];
     this.word = [];
+
+    $('.letter').removeClass('selected');
   }
 
   onMouseDown(event) {
@@ -81,6 +83,8 @@ class Boggle {
     if (!this.isSelectedIndex(index)) {
       this.selectedIndices.push(index);
       this.word.push($(event.target).text());
+
+      $(event.currentTarget).addClass('selected');
     }
   }
 
@@ -91,6 +95,8 @@ class Boggle {
       if (!this.isSelectedIndex(index)) {
         this.selectedIndices.push(index);
         this.word.push($(event.target).text());
+
+        $(event.currentTarget).addClass('selected');
       }
     }
   }

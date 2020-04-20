@@ -44,6 +44,10 @@ body {
   cursor: pointer;
 }
 
+.letter.selected {
+  background: rgb(48, 55, 75);
+}
+
 .scoreboard {
   height: 26.9rem;
   width: 19rem;
@@ -63,7 +67,6 @@ body {
   text-align: center;
   padding: 5px;
   overflow: hidden;
-
   text-overflow: ellipsis;
 }
 
