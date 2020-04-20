@@ -21,20 +21,14 @@ class Boggle {
       ['P', 'A', 'C', 'E', 'M', 'D']
     ];
 
-    $('#board .letter').mousedown((event) => {
-      this.isMouseDown = true;
-      this.word.push($(event.target).text());
-    });
-
+    $('#board .letter').mousedown(this.onMouseDown.bind(this));
     $('body').mouseup(this.onMouseUp.bind(this));
+    $('#board .letter').mouseenter(this.onMouseEnter.bind(this));
 
-    $('#board .letter').mouseenter((event) => {
-      if (this.isMouseDown) {
-        this.word.push($(event.target).text());
-      }
-    });
-
-    this.gameDurationInSeconds = 2;
+    this.name = "Emiel";
+    this.gameDurationInSeconds = 5;
+    this.highScores = [];
+    this.highScoresLimit = 8;
 
     this.start();
   }
@@ -48,12 +42,8 @@ class Boggle {
   play() {
     this.timeout = setTimeout(() => {
       clearTimeout(this.timeout);
-
-      // empty words + scores
-      $('.scoreboard').children().remove();
-
       // display score
-      console.log(this.getTotalScore());
+      this.AddScoreToHighscores(this.score);
 
       // start new game
       this.start();
@@ -65,15 +55,33 @@ class Boggle {
     this.word = [];
     this.isMouseDown = false;
 
+    $('.scoreboard').children().remove();
+
     const board = this.getRandomBoard(this.dice);
     this.drawBoard(board);
   }
 
   onMouseUp() {
     this.isMouseDown = false;
-    this.words.push(this.word);
-    this.AddWordToScoreboard(this.word);
+
+    if (this.isValidWordLength(this.word)) {
+      this.words.push(this.word);
+      this.AddWordToScoreboard(this.word);
+    }
+
     this.word = [];
+  }
+
+  onMouseDown(event) {
+    this.isMouseDown = true;
+    this.word.push($(event.target).text());
+  }
+
+  onMouseEnter() {
+    if (this.isMouseDown) {
+      console.log($(event.target));
+      this.word.push($(event.target).text());
+    }
   }
 
   getRandomBoard(dice) {
@@ -103,6 +111,10 @@ class Boggle {
     return score;
   }
 
+  isValidWordLength(word) {
+    return word.length >= 3;
+  }
+
   getWordScore(word) {
     if (word.length >= 8) return 11;
     else if (word.length >= 7) return 5;
@@ -110,7 +122,6 @@ class Boggle {
     else if (word.length >= 5) return 2;
     else if (word.length >= 4) return 1;
     else if (word.length >= 3) return 1;
-    else return 0;
   }
 
   AddWordToScoreboard(word) {
@@ -118,6 +129,24 @@ class Boggle {
 
     $('.scoreboard').append(`<div class= "word" >${word.join("")}</div>`);
     $('.scoreboard').append(`<div class= "score" >${score}</div>`);
+  }
+
+  AddScoreToHighscores(words) {
+    const score = this.getTotalScore(words);
+    this.highScores.push(score);
+    this.highScores.sort((a, b) => {return b-a});
+
+    this.clearHighscoresElement()
+
+    for (let i = 0; i < this.highScoresLimit; i++) {
+      $('.highscores').append(`<div class= "highscore-index" >${i+1}.</div>`);
+      $('.highscores').append(`<div class= "highscore-name" >${this.name}</div>`);
+      $('.highscores').append(`<div class= "highscore" >${this.highScores[i]}</div>`);
+    }
+  }
+
+  clearHighscoresElement() {
+    $('.highscores').children().remove();
   }
 }
 
