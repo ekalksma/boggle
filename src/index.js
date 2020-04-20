@@ -155,15 +155,18 @@ class Boggle {
 
   AddScoreToHighscores(words) {
     const score = this.getTotalScore(words);
+
     this.highScores.push(score);
     this.highScores.sort((a, b) => {return b-a});
 
     this.clearHighscoresElement();
 
-    for (let i = 0; i < this.highScoresLimit; i++) {
-      $('.highscores').append(`<div class= "highscore-index" >${i+1}.</div>`);
-      $('.highscores').append(`<div class= "highscore-name" >${this.name}</div>`);
-      $('.highscores').append(`<div class= "highscore" >${this.highScores[i]}</div>`);
+    for (let i = 0; i < this.highScores.length; i++) {
+      if (i + 1 <= this.highScoresLimit) {
+        $('.highscores').append(`<div class= "highscore-index" >${i+1}.</div>`);
+        $('.highscores').append(`<div class= "highscore-name" >${this.name}</div>`);
+        $('.highscores').append(`<div class= "highscore" >${this.highScores[i]}</div>`);
+      }
     }
   }
 
