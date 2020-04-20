@@ -83,7 +83,7 @@ class Boggle {
 
     if (!this.isSelectedIndex(index)) {
       this.selectedIndices.push(index);
-      this.word.push($(event.target).text());
+      this.word.push($(event.currentTarget).children('span').text());
 
       $(event.currentTarget).addClass('selected');
     }
@@ -95,7 +95,7 @@ class Boggle {
 
       if (!this.isSelectedIndex(index)) {
         this.selectedIndices.push(index);
-        this.word.push($(event.target).text());
+        this.word.push($(event.currentTarget).children('span').text());
 
         $(event.currentTarget).addClass('selected');
       }
@@ -119,7 +119,7 @@ class Boggle {
 
   drawBoard(board) {
     $('#board .letter').each(function (index) {
-      $(this).text(board[index]);
+      $(this).children('span').text(board[index]);
     });
   }
 
