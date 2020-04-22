@@ -1,9 +1,12 @@
 import { randomNumberGenerator } from './utils/math';
 import express from 'express';
 import validator from 'validator';
+import cors from 'cors';
 
 const app = express()
+app.use(cors())
 const port = 3000
+
 
 function getRandomBoard(seed) {
   const dice = [
@@ -54,8 +57,8 @@ app.get('/getrandomboard', ({ query }, res) => {
 app.get('/getwordscore', ({ query }, res) => {
   const { word } = query;
 
-  if(word && !validator.isAlpha(word)){
-    return res.send({ error: "string contains numbers" });
+  if (word && !validator.isAlpha(word) && word.length < 3){
+    return res.send({ error: "invalid word" });
   }
 
   if (word.length >= 8) return res.send({ score: 11});
@@ -69,6 +72,14 @@ app.get('/getwordscore', ({ query }, res) => {
 app.get('/isValidWord', ({ query }, res) => {
   const id = query.id;
   const word = query.word;
+
+  if (id && !validator.isInt(id, { min: 0, max: 100000000000 })) {
+    return res.send({ error: "invalid ID" });
+  }
+
+  if (word && !validator.isAlpha(word) && word.length < 3){
+    return res.send({ error: "Invalid word" });
+  }
 
   const board = getRandomBoard(id);
   let board2d = [];
@@ -183,9 +194,7 @@ app.get('/isValidWord', ({ query }, res) => {
   const fs = require('fs');
 
   const dictionary = fs.readFileSync('./src/dictionaries/dutch.txt', "utf8").toString().split('\n');
-  let isWordInDictionary = dictionary.indexOf(word) >= 0;
-
-  console.log(dictionary.indexOf(word));
+  let isWordInDictionary = dictionary.indexOf(word.toLowerCase()) >= 0;
 
   res.send(isWordFound(word) && isWordInDictionary);
 });
