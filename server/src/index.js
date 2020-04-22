@@ -182,8 +182,10 @@ app.get('/isValidWord', ({ query }, res) => {
 
   const fs = require('fs');
 
-  const dictionary = fs.readFileSync('./src/dictionaries/dutch.txt', "utf8");
+  const dictionary = fs.readFileSync('./src/dictionaries/dutch.txt', "utf8").toString().split('\n');
   let isWordInDictionary = dictionary.indexOf(word) >= 0;
+
+  console.log(dictionary.indexOf(word));
 
   res.send(isWordFound(word) && isWordInDictionary);
 });
