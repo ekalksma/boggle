@@ -6,31 +6,13 @@ $.ajaxSetup({
 
 class Boggle {
   constructor() {
-    this.dice = [
-      ['R', 'I', 'F', 'O', 'B', 'X'],
-      ['I', 'F', 'E', 'H', 'E', 'Y'],
-      ['D', 'E', 'N', 'O', 'W', 'S'],
-      ['U', 'T', 'O', 'K', 'N', 'D'],
-      ['H', 'M', 'S', 'R', 'A', 'O'],
-      ['L', 'U', 'P', 'E', 'T', 'S'],
-      ['A', 'C', 'I', 'T', 'O', 'A'],
-      ['Y', 'L', 'G', 'K', 'U', 'E'],
-      ['Q', 'B', 'M', 'J', 'O', 'A'],
-      ['E', 'H', 'I', 'S', 'P', 'N'],
-      ['V', 'E', 'T', 'I', 'G', 'N'],
-      ['B', 'A', 'L', 'I', 'Y', 'T'],
-      ['E', 'Z', 'A', 'V', 'N', 'D'],
-      ['R', 'A', 'L', 'E', 'S', 'C'],
-      ['U', 'W', 'I', 'L', 'R', 'G'],
-      ['P', 'A', 'C', 'E', 'M', 'D']
-    ];
-
     $('#board .letter').mousedown(this.onMouseDown.bind(this));
     $('#board').mouseup(this.onMouseUp.bind(this));
     $('#board').mouseleave(this.handleMouseLeave.bind(this));
     $('#board .letter').mouseenter(this.onMouseEnter.bind(this));
 
     this.name = "Emiel";
+    this.id = 0;
     this.gameDurationInSeconds = 30;
     this.highScores = [];
     this.selectedIndices = [];
@@ -85,8 +67,7 @@ class Boggle {
 
     this.isMouseDown = false;
 
-    $.getJSON(`http://localhost:3000/isValidWord?id=${this.id}&word=${this.word.join('')}`, (isFound) => {
-      console.log(isFound);
+    $.getJSON(`http://localhost:3000/iswordvalid?id=${this.id}&word=${this.word.join('')}`, (isFound) => {
       if (!isFound) return;
 
       if (!this.words.includes(this.word.join(''))) {
@@ -94,7 +75,6 @@ class Boggle {
 
         $.getJSON(`http://localhost:3000/getwordscore?word=${this.word.join('')}`, (result) => {
           this.addWordToScoreboard(this.word.join(''), result.score);
-          console.log(result);
         });
       }
     });
