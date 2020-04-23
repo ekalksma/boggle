@@ -1,4 +1,5 @@
 import { randomNumberGenerator } from './utils/math';
+import fs from 'fs';
 
 export function getRandomBoard(seed) {
   const dice = [
@@ -42,11 +43,46 @@ export function getWordScore(word) {
 }
 
 export function isValidWord(id, word) {
+  word = word.toLowerCase();
   const board = getRandomBoard(id);
-  let board2d = [];
 
-  const boardWidth = 4;
-  const boardHeight = 4;
+  return  isWordOnBoard(board, word) && isWordInDict(word);
+}
+
+function isWordInDict(word) {
+  const dictionary = fs.readFileSync('./src/dictionaries/dutch.txt', "utf8").toString().split('\n');
+
+  return dictionary.indexOf(word) >= 0;
+}
+
+function isWordOnBoard (board, word) {
+  const firstLetter = word[0];
+  const firstLetterBoardIndices = [];
+  const board2d = boardTo2DArray(board);
+
+  for (const [index, letter] of Object.entries(board)) {
+    if (firstLetter === letter.toLowerCase()) {
+      firstLetterBoardIndices.push(index);
+    }
+  }
+
+  if (!firstLetterBoardIndices.length) {
+    return false;
+  }
+
+  let foundWord = false;
+
+  for (const startIndex of firstLetterBoardIndices) {
+    if (depthFirstSearch(board2d, startIndex, word)) {
+      foundWord = true;
+    }
+  }
+
+  return foundWord;
+};
+
+function boardTo2DArray (board, boardWidth = 4, boardHeight = 4) {
+  const board2d = [];
 
   for (let i = 0; i < boardHeight; i++) {
     const row = [];
@@ -58,103 +94,72 @@ export function isValidWord(id, word) {
         letter: board[i * boardWidth + j]}
       );
     }
-
     board2d.push(row);
   }
 
-  const depthFirstSearch = (startIndex, word, wordIndex = 1) => {
-    if (word.length === wordIndex) {
-      return true;
-    }
+  return board2d;
+}
 
-    const x = startIndex % boardWidth;
-    const y = parseInt(startIndex / boardWidth);
+function depthFirstSearch (board, startIndex, word, wordIndex = 1, boardWidth = 4, boardHeight = 4) {
+  if (word.length === wordIndex) {
+    return true;
+  }
 
-    const neighboringCells = {
-      n: null,
-      s: null,
-      e: null,
-      w: null,
-      ne: null,
-      nw: null,
-      se: null,
-      sw: null,
-    };
+  const x = startIndex % boardWidth;
+  const y = parseInt(startIndex / boardWidth);
 
-    if (y - 1 >= 0) {
-      neighboringCells.n = board2d[y - 1][x];
-
-      if (x + 1 < boardWidth) {
-        neighboringCells.ne = board2d[y - 1][x + 1];
-      }
-
-      if (x - 1 >= 0) {
-        neighboringCells.nw = board2d[y - 1][x - 1];
-      }
-    }
-
-    if (x - 1 >= 0) neighboringCells.w = board2d[y][x - 1];
-    if (x + 1 < boardWidth) neighboringCells.e = board2d[y][x + 1];
-
-    if (y + 1 < boardHeight) {
-      neighboringCells.s = board2d[y + 1][x];
-
-      if (x + 1 < boardWidth) {
-        neighboringCells.se = board2d[y + 1][x + 1];
-      }
-
-      if (x - 1 >= 0) {
-        neighboringCells.sw = board2d[y + 1][x - 1];
-      }
-    }
-
-    for (const cell of Object.values(neighboringCells)) {
-      if (!cell || cell.visited) {
-        continue;
-      }
-
-      const x = cell.index % boardWidth;
-      const y = parseInt(cell.index / boardWidth);
-
-      board2d[y][x].visited = true;
-
-      if (cell.letter.toLowerCase() === word[wordIndex].toLowerCase()) {
-        return depthFirstSearch(cell.index, word, ++wordIndex);
-      }
-    }
-
-    return false;
+  const neighboringCells = {
+    n: null,
+    s: null,
+    e: null,
+    w: null,
+    ne: null,
+    nw: null,
+    se: null,
+    sw: null,
   };
 
-  const isWordFound = (word) => {
-    const firstLetter = word[0];
-    const firstLetterBoardIndices = [];
+  if (y - 1 >= 0) {
+    neighboringCells.n = board[y - 1][x];
 
-    for (const [index, letter] of Object.entries(board)) {
-      if (firstLetter.toLowerCase() === letter.toLowerCase()) {
-        firstLetterBoardIndices.push(index);
-      }
+    if (x + 1 < boardWidth) {
+      neighboringCells.ne = board[y - 1][x + 1];
     }
 
-    if (!firstLetterBoardIndices.length) {
-      return false;
+    if (x - 1 >= 0) {
+      neighboringCells.nw = board[y - 1][x - 1];
+    }
+  }
+
+  if (x - 1 >= 0) neighboringCells.w = board[y][x - 1];
+  if (x + 1 < boardWidth) neighboringCells.e = board[y][x + 1];
+
+  if (y + 1 < boardHeight) {
+    neighboringCells.s = board[y + 1][x];
+
+    if (x + 1 < boardWidth) {
+      neighboringCells.se = board[y + 1][x + 1];
     }
 
-    let foundWord = false;
+    if (x - 1 >= 0) {
+      neighboringCells.sw = board[y + 1][x - 1];
+    }
+  }
 
-    for (const startIndex of firstLetterBoardIndices) {
-      if (depthFirstSearch(startIndex, word)) {
-        foundWord = true;
-      }
+  for (const cell of Object.values(neighboringCells)) {
+    if (!cell || cell.visited) {
+      continue;
     }
 
-    return foundWord;
-  };
+    const x = cell.index % boardWidth;
+    const y = parseInt(cell.index / boardWidth);
 
-  const fs = require('fs');
+    board[y][x].visited = true;
 
-  const dictionary = fs.readFileSync('./src/dictionaries/dutch.txt', "utf8").toString().split('\n');
-  let isWordInDictionary = dictionary.indexOf(word.toLowerCase()) >= 0;
+    if (cell.letter.toLowerCase() === word[wordIndex]) {
+      return depthFirstSearch(board, cell.index, word, ++wordIndex);
+    }
+  }
 
-  return isWordFound(word) && isWordInDictionary;
+  return false;
 }
