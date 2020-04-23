@@ -57,7 +57,11 @@ app.get('/getrandomboard', ({ query }, res) => {
 app.get('/getwordscore', ({ query }, res) => {
   const { word } = query;
 
-  if (word && !validator.isAlpha(word) && word.length < 3){
+  if (!word) {
+    return res.send({error: 'You must provide a word'});
+  }
+
+  if (!validator.isAlpha(word) || word.length < 3) {
     return res.send({ error: "invalid word" });
   }
 
@@ -65,20 +69,23 @@ app.get('/getwordscore', ({ query }, res) => {
   else if (word.length >= 7) return res.send({ score: 5});
   else if (word.length >= 6) return res.send({ score: 3});
   else if (word.length >= 5) return res.send({ score: 2});
-  else if (word.length >= 4) return res.send({ score: 1});
-  else if (word.length >= 3) return res.send({ score: 1});
+  else return res.send({ score: 1});
 });
 
 app.get('/isValidWord', ({ query }, res) => {
   const id = query.id;
   const word = query.word;
 
-  if (id && !validator.isInt(id, { min: 0, max: 100000000000 })) {
-    return res.send({ error: "invalid ID" });
+  if (!id || !word) {
+    return res.send(false);
   }
 
-  if (word && !validator.isAlpha(word) && word.length < 3){
-    return res.send({ error: "Invalid word" });
+  if (!validator.isInt(id, { min: 0, max: 100000000000 })) {
+    return res.send(false);
+  }
+
+  if (!validator.isAlpha(word) || word.length < 3){
+    return res.send(false);
   }
 
   const board = getRandomBoard(id);
@@ -158,7 +165,7 @@ app.get('/isValidWord', ({ query }, res) => {
       board2d[y][x].visited = true;
 
       if (cell.letter.toLowerCase() === word[wordIndex].toLowerCase()) {
-        console.log(cell);
+        // console.log(cell);
         return depthFirstSearch(cell.index, word, ++wordIndex);
       }
     }

@@ -94,13 +94,13 @@ class Boggle {
 
         $.getJSON(`http://localhost:3000/getwordscore?word=${this.word.join('')}`, (result) => {
           this.addWordToScoreboard(this.word.join(''), result.score);
+          console.log(result);
         });
       }
     });
 
     this.selectedIndices = [];
     this.word = [];
-
     $('.letter').removeClass('selected');
   }
 
@@ -156,9 +156,11 @@ class Boggle {
   getTotalScore() {
     let score = 0;
 
-    // for (const word of this.words) {
-    //   score += this.getWordScore(word);
-    // }
+    for (const word of this.words) {
+      $.getJSON(`http://localhost:3000/getwordscore?word=${word}`, (result) => {
+          score += result.score;
+        });
+    }
 
     return score;
   }
