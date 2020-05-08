@@ -5,16 +5,34 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      error: null,
+      isLoaded: false,
       squares: Array(9).fill(null),
     }
   }
 
+  componentDidMount() {
+    fetch("http://localhost:3000/getrandomboard")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            squares: result.board
+          });
+          console.log(this.state.squares);
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
+
   renderSquare(i) {
-    return (<Square
-            value = {this.state.squares[i]}
-            onClick = {() => this.handleClick(i)}
-            />
-          );
+    return (<Square value = { i } /> );
     }
 
   render() {
@@ -24,19 +42,19 @@ export default class Board extends React.Component {
       <div>
         <div className="status">{status}</div>
         <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
+          {this.renderSquare(this.state.squares[0])}
+          {this.renderSquare(this.state.squares[1])}
+          {this.renderSquare(this.state.squares[2])}
         </div>
         <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
+          {this.renderSquare(this.state.squares[3])}
+          {this.renderSquare(this.state.squares[4])}
+          {this.renderSquare(this.state.squares[5])}
         </div>
         <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
+          {this.renderSquare(this.state.squares[6])}
+          {this.renderSquare(this.state.squares[7])}
+          {this.renderSquare(this.state.squares[8])}
         </div>
       </div>
     );
