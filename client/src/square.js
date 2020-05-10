@@ -10,7 +10,8 @@ export default class Square extends React.Component {
 
   render() {
     return (
-      <div className="square">
+      <div className={`square ${this.props.isSelected ? 'selected' : ''}`}
+           onMouseEnter={() => this.props.onMouseEnter()}>
         {this.props.value}
       </div>
     );

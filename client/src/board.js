@@ -5,6 +5,7 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedSquareIndices: [],
       error: null,
       isLoaded: false,
       squares: Array(9).fill(null),
@@ -31,8 +32,26 @@ export default class Board extends React.Component {
   }
 
   renderSquare(i) {
-    return (<Square value = { this.state.squares[i] } /> );
+    return (<Square
+      isSelected={ this.isSquareSelected(i) }
+      value={ this.state.squares[i] }
+      onMouseEnter={ () => this.handleOnMouseEnter(i) }
+    />);
+  }
+
+  handleOnMouseEnter(i) {
+    if (this.isSquareSelected(i)) {
+      return;
     }
+
+    const selectedSquareIndices = this.state.selectedSquareIndices.slice();
+    selectedSquareIndices.push(i);
+    this.setState({selectedSquareIndices});
+  }
+
+  isSquareSelected(i) {
+    return this.state.selectedSquareIndices.includes(i);
+  }
 
   render() {
     const status = 'Next player: X';
