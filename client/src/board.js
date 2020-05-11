@@ -6,6 +6,7 @@ export default class Board extends React.Component {
     super(props);
     this.state = {
       selectedSquareIndices: [],
+      isMouseDown: false,
       error: null,
       isLoaded: false,
       squares: Array(9).fill(null),
@@ -36,17 +37,41 @@ export default class Board extends React.Component {
       isSelected={ this.isSquareSelected(i) }
       value={ this.state.squares[i] }
       onMouseEnter={ () => this.handleOnMouseEnter(i) }
+      onMouseDown={ () => this.handleOnMouseDown(i) }
+      onMouseUp={ () => this.handleOnMouseUp() }
     />);
   }
 
   handleOnMouseEnter(i) {
-    if (this.isSquareSelected(i)) {
+    if (this.isSquareSelected(i) || !this.state.isMouseDown) {
       return;
     }
 
     const selectedSquareIndices = this.state.selectedSquareIndices.slice();
     selectedSquareIndices.push(i);
     this.setState({selectedSquareIndices});
+  }
+
+  handleOnMouseDown(i) {
+    if (this.isSquareSelected(i)) {
+      return;
+    }
+
+    this.setState({isMouseDown: true});
+
+    const selectedSquareIndices = this.state.selectedSquareIndices.slice();
+    selectedSquareIndices.push(i);
+    this.setState({selectedSquareIndices});
+  }
+
+  handleOnMouseUp() {
+    if (!this.state.isMouseDown) {
+      return;
+    }
+
+    let selectedSquareIndices = this.state.selectedSquareIndices.slice();
+    selectedSquareIndices = [];
+    this.setState({selectedSquareIndices, isMouseDown: false});
   }
 
   isSquareSelected(i) {
