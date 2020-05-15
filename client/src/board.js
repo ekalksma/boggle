@@ -5,7 +5,9 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      id: null,
       selectedSquareIndices: [],
+      words: [],
       isMouseDown: false,
       error: null,
       isLoaded: false,
@@ -20,6 +22,7 @@ export default class Board extends React.Component {
         (result) => {
           this.setState({
             isLoaded: true,
+            id: result.id,
             squares: result.board
           });
         },
@@ -68,8 +71,26 @@ export default class Board extends React.Component {
     if (!this.state.isMouseDown) {
       return;
     }
+    console.log(this.state.id);
 
+
+    const id = this.state.id;
     let selectedSquareIndices = this.state.selectedSquareIndices.slice();
+
+    fetch(`//localhost:3000/iswordvalid?id=${id}&selection=${selectedSquareIndices}`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log(result);
+          // if (!result.isValidWord) return;
+
+
+        },
+        (error) => {
+          this.setState({error});
+        }
+      );
+
     selectedSquareIndices = [];
     this.setState({selectedSquareIndices, isMouseDown: false});
   }

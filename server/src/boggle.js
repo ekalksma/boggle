@@ -42,11 +42,23 @@ export function getWordScore(word) {
   return 1;
 }
 
-export function isValidWord(id, word) {
-  word = word.toLowerCase();
+export function isValidWord(id, selection) {
   const board = getRandomBoard(id);
+  const word = getWordFromSelection(id, selection);
+
 
   return  isWordOnBoard(board, word) && isWordInDict(word);
+}
+
+export function getWordFromSelection(id, selection) {
+  const board = getRandomBoard(id);
+  let word = "";
+
+  for (const index of selection) {
+    word += board[index];
+  }
+
+  return word;
 }
 
 function isWordInDict(word) {

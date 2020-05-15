@@ -1,7 +1,7 @@
 import express from 'express';
 import validator from 'validator';
 import cors from 'cors';
-import { getRandomBoard, getWordScore, isValidWord } from './boggle';
+import { getRandomBoard, getWordScore, isValidWord, getWordFromSelection } from './boggle';
 
 const app = express()
 app.use(cors())
@@ -36,9 +36,15 @@ app.get('/getwordscore', ({ query }, res) => {
 
 app.get('/iswordvalid', ({ query }, res) => {
   const id = query.id;
-  const word = query.word;
+  let selection = query.selection;
 
-  if (!id || !word) {
+  if (typeof selection === 'string') {
+    selection = selection.split(',');
+  }
+
+  const word = getWordFromSelection(id, selection);
+
+  if (!id || !selection) {
     return res.send(false);
   }
 
@@ -46,11 +52,13 @@ app.get('/iswordvalid', ({ query }, res) => {
     return res.send(false);
   }
 
-  if (!validator.isAlpha(word) || word.length < 3){
+  if (selection.length < 3){
     return res.send(false);
   }
 
-  res.send(isValidWord(id, word));
+  const validWord = isValidWord(id, selection);
+
+  res.send({validWord, word});
 });
 
 app.listen(port, () => console.log(`Listening at http://localhost:${port}`));
