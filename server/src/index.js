@@ -31,7 +31,7 @@ app.get('/getwordscore', ({ query }, res) => {
     return res.send({ error: "invalid word" });
   }
 
-  res.send({ score: getWordScore(word)});
+  res.send({ score: getWordScore(word) });
 });
 
 app.get('/iswordvalid', ({ query }, res) => {

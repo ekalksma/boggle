@@ -81,14 +81,28 @@ export default class Board extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          console.log(result);
-          // if (!result.isValidWord) return;
+          console.log(result.validWord);
+          if(!result.validWord) return;
 
+          const word = result.word;
+          console.log(word);
 
+          if (!this.state.words.includes(this.word)) {
+            const words = this.state.words.slice();
+            words.push(word);
+            this.setState({words});
+          }
+
+          fetch(`http://localhost:3000/getwordscore?word=${word}`)
+            .then(res => res.json())
+            .then(
+              (result) => {
+                console.log(result.score);
+              },
+              (error) => { this.setState({error}); }
+            );
         },
-        (error) => {
-          this.setState({error});
-        }
+        (error) => { this.setState({error}); }
       );
 
     selectedSquareIndices = [];
@@ -109,16 +123,25 @@ export default class Board extends React.Component {
           {this.renderSquare(0)}
           {this.renderSquare(1)}
           {this.renderSquare(2)}
+          {this.renderSquare(3)}
         </div>
         <div className="board-row">
-          {this.renderSquare(3)}
           {this.renderSquare(4)}
           {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
           {this.renderSquare(6)}
           {this.renderSquare(7)}
+        </div>
+        <div className="board-row">
           {this.renderSquare(8)}
+          {this.renderSquare(9)}
+          {this.renderSquare(10)}
+          {this.renderSquare(11)}
+        </div>
+        <div className="board-row">
+          {this.renderSquare(12)}
+          {this.renderSquare(13)}
+          {this.renderSquare(14)}
+          {this.renderSquare(15)}
         </div>
       </div>
     );

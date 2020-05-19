@@ -44,10 +44,12 @@ export function getWordScore(word) {
 
 export function isValidWord(id, selection) {
   const board = getRandomBoard(id);
-  const word = getWordFromSelection(id, selection);
+  let word = getWordFromSelection(id, selection);
+  word = word.toLowerCase();
 
+  console.log(isWordInDict(word));
 
-  return  isWordOnBoard(board, word) && isWordInDict(word);
+  return isWordInDict(word);
 }
 
 export function getWordFromSelection(id, selection) {
@@ -67,111 +69,112 @@ function isWordInDict(word) {
   return dictionary.indexOf(word) >= 0;
 }
 
-function isWordOnBoard (board, word) {
-  const firstLetter = word[0];
-  const firstLetterBoardIndices = [];
-  const board2d = boardTo2DArray(board);
+// function isWordOnBoard (board, word) {
+//   word = word.toLowerCase();
+//   const firstLetter = word[0];
+//   const firstLetterBoardIndices = [];
+//   const board2d = boardTo2DArray(board);
 
-  for (const [index, letter] of Object.entries(board)) {
-    if (firstLetter === letter.toLowerCase()) {
-      firstLetterBoardIndices.push(index);
-    }
-  }
+//   for (const [index, letter] of Object.entries(board)) {
+//     if (firstLetter === letter.toLowerCase()) {
+//       firstLetterBoardIndices.push(index);
+//     }
+//   }
 
-  if (!firstLetterBoardIndices.length) {
-    return false;
-  }
+//   if (!firstLetterBoardIndices.length) {
+//     return false;
+//   }
 
-  let foundWord = false;
+//   let foundWord = false;
 
-  for (const startIndex of firstLetterBoardIndices) {
-    if (depthFirstSearch(board2d, startIndex, word)) {
-      foundWord = true;
-    }
-  }
+//   for (const startIndex of firstLetterBoardIndices) {
+//     if (depthFirstSearch(board2d, startIndex, word)) {
+//       foundWord = true;
+//     }
+//   }
 
-  return foundWord;
-};
+//   return foundWord;
+// };
 
-function boardTo2DArray (board, boardWidth = 4, boardHeight = 4) {
-  const board2d = [];
+// function boardTo2DArray (board, boardWidth = 4, boardHeight = 4) {
+//   const board2d = [];
 
-  for (let i = 0; i < boardHeight; i++) {
-    const row = [];
+//   for (let i = 0; i < boardHeight; i++) {
+//     const row = [];
 
-    for (let j = 0; j < boardWidth; j++) {
-      row.push({
-        index: i * boardWidth + j,
-        visited: false,
-        letter: board[i * boardWidth + j]}
-      );
-    }
-    board2d.push(row);
-  }
+//     for (let j = 0; j < boardWidth; j++) {
+//       row.push({
+//         index: i * boardWidth + j,
+//         visited: false,
+//         letter: board[i * boardWidth + j]}
+//       );
+//     }
+//     board2d.push(row);
+//   }
 
-  return board2d;
-}
+//   return board2d;
+// }
 
-function depthFirstSearch (board, startIndex, word, wordIndex = 1, boardWidth = 4, boardHeight = 4) {
-  if (word.length === wordIndex) {
-    return true;
-  }
+// function depthFirstSearch (board, startIndex, word, wordIndex = 1, boardWidth = 4, boardHeight = 4) {
+//   if (word.length === wordIndex) {
+//     return true;
+//   }
 
-  const x = startIndex % boardWidth;
-  const y = parseInt(startIndex / boardWidth);
+//   const x = startIndex % boardWidth;
+//   const y = parseInt(startIndex / boardWidth);
 
-  const neighboringCells = {
-    n: null,
-    s: null,
-    e: null,
-    w: null,
-    ne: null,
-    nw: null,
-    se: null,
-    sw: null,
-  };
+//   const neighboringCells = {
+//     n: null,
+//     s: null,
+//     e: null,
+//     w: null,
+//     ne: null,
+//     nw: null,
+//     se: null,
+//     sw: null,
+//   };
 
-  if (y - 1 >= 0) {
-    neighboringCells.n = board[y - 1][x];
+//   if (y - 1 >= 0) {
+//     neighboringCells.n = board[y - 1][x];
 
-    if (x + 1 < boardWidth) {
-      neighboringCells.ne = board[y - 1][x + 1];
-    }
+//     if (x + 1 < boardWidth) {
+//       neighboringCells.ne = board[y - 1][x + 1];
+//     }
 
-    if (x - 1 >= 0) {
-      neighboringCells.nw = board[y - 1][x - 1];
-    }
-  }
+//     if (x - 1 >= 0) {
+//       neighboringCells.nw = board[y - 1][x - 1];
+//     }
+//   }
 
-  if (x - 1 >= 0) neighboringCells.w = board[y][x - 1];
-  if (x + 1 < boardWidth) neighboringCells.e = board[y][x + 1];
+//   if (x - 1 >= 0) neighboringCells.w = board[y][x - 1];
+//   if (x + 1 < boardWidth) neighboringCells.e = board[y][x + 1];
 
-  if (y + 1 < boardHeight) {
-    neighboringCells.s = board[y + 1][x];
+//   if (y + 1 < boardHeight) {
+//     neighboringCells.s = board[y + 1][x];
 
-    if (x + 1 < boardWidth) {
-      neighboringCells.se = board[y + 1][x + 1];
-    }
+//     if (x + 1 < boardWidth) {
+//       neighboringCells.se = board[y + 1][x + 1];
+//     }
 
-    if (x - 1 >= 0) {
-      neighboringCells.sw = board[y + 1][x - 1];
-    }
-  }
+//     if (x - 1 >= 0) {
+//       neighboringCells.sw = board[y + 1][x - 1];
+//     }
+//   }
 
-  for (const cell of Object.values(neighboringCells)) {
-    if (!cell || cell.visited) {
-      continue;
-    }
+//   for (const cell of Object.values(neighboringCells)) {
+//     if (!cell || cell.visited) {
+//       continue;
+//     }
 
-    const x = cell.index % boardWidth;
-    const y = parseInt(cell.index / boardWidth);
+//     const x = cell.index % boardWidth;
+//     const y = parseInt(cell.index / boardWidth);
 
-    board[y][x].visited = true;
+//     board[y][x].visited = true;
 
-    if (cell.letter.toLowerCase() === word[wordIndex]) {
-      return depthFirstSearch(board, cell.index, word, ++wordIndex);
-    }
-  }
+//     if (cell.letter.toLowerCase() === word[wordIndex]) {
+//       return depthFirstSearch(board, cell.index, word, ++wordIndex);
+//     }
+//   }
 
-  return false;
-}
+//   return false;
+// }
