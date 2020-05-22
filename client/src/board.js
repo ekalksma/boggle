@@ -5,7 +5,7 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: null,
+      id: this.props.id,
       selectedSquareIndices: [],
       words: [],
       isMouseDown: false,
@@ -15,30 +15,10 @@ export default class Board extends React.Component {
     }
   }
 
-  componentDidMount() {
-    fetch("http://localhost:3000/getrandomboard")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            id: result.id,
-            squares: result.board
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
-  }
-
   renderSquare(i) {
     return (<Square
       isSelected={ this.isSquareSelected(i) }
-      value={ this.state.squares[i] }
+      value={ this.props.letters[i] }
       onMouseEnter={ () => this.handleOnMouseEnter(i) }
       onMouseDown={ () => this.handleOnMouseDown(i) }
       onMouseUp={ () => this.handleOnMouseUp() }
@@ -71,8 +51,6 @@ export default class Board extends React.Component {
     if (!this.state.isMouseDown) {
       return;
     }
-    console.log(this.state.id);
-
 
     const id = this.state.id;
     let selectedSquareIndices = this.state.selectedSquareIndices.slice();
@@ -81,12 +59,10 @@ export default class Board extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-          console.log(result.validWord);
           if(!result.validWord) return;
 
           const word = result.word;
           console.log(word);
-
           if (!this.state.words.includes(this.word)) {
             const words = this.state.words.slice();
             words.push(word);
@@ -114,8 +90,6 @@ export default class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: X';
-
     return (
       <div>
         <div className="status">{status}</div>
