@@ -5,9 +5,7 @@ export default class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: this.props.id,
       selectedSquareIndices: [],
-      words: [],
       isMouseDown: false,
       error: null,
       isLoaded: false,
@@ -55,31 +53,7 @@ export default class Board extends React.Component {
     const id = this.state.id;
     let selectedSquareIndices = this.state.selectedSquareIndices.slice();
 
-    fetch(`//localhost:3000/iswordvalid?id=${id}&selection=${selectedSquareIndices}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          if(!result.validWord) return;
-
-          const word = result.word;
-          console.log(word);
-          if (!this.state.words.includes(this.word)) {
-            const words = this.state.words.slice();
-            words.push(word);
-            this.setState({words});
-          }
-
-          fetch(`http://localhost:3000/getwordscore?word=${word}`)
-            .then(res => res.json())
-            .then(
-              (result) => {
-                console.log(result.score);
-              },
-              (error) => { this.setState({error}); }
-            );
-        },
-        (error) => { this.setState({error}); }
-      );
+    this.props.onSelectWord(this.state.selectedSquareIndices);
 
     selectedSquareIndices = [];
     this.setState({selectedSquareIndices, isMouseDown: false});
