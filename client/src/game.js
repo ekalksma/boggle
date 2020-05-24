@@ -1,4 +1,5 @@
 import React from 'react';
+import ScoreBoard from './scoreboard';
 import Board from './board';
 
 export default class Game extends React.Component {
@@ -6,7 +7,7 @@ export default class Game extends React.Component {
     super(props);
     this.state = {
       id: null,
-      words: [],
+      wordsWithScore: [],
       isLoaded: false,
       board: Array(9).fill(null),
       error: null
@@ -43,32 +44,38 @@ export default class Game extends React.Component {
           if(!result.validWord) return;
 
           const word = result.word;
-          console.log(word);
-          if (!this.state.words.includes(this.word)) {
-            const words = this.state.words.slice();
-            words.push(word);
-            this.setState({words});
-          }
 
-          fetch(`http://localhost:3000/getwordscore?word=${word}`)
+          if (!this.isWordDuplicate(word)) {
+            fetch(`http://localhost:3000/getwordscore?word=${word}`)
             .then(res => res.json())
             .then(
               (result) => {
-                console.log(result.score);
+                const score = result.score;
+
+                const wordsWithScore = this.state.wordsWithScore.slice();
+                wordsWithScore.push({word, score});
+                this.setState({wordsWithScore});
               },
               (error) => { this.setState({error}); }
             );
+          }
         },
-        (error) => { this.setState({error}); }
+        (error) => { this.setState({error} ); }
       );
   }
 
+  isWordDuplicate(word) {
+    return this.state.wordsWithScore.some(obj => obj.word === word);
+  }
 
   render() {
     if (!this.state.isLoaded) return <div>Is loading</div>;
 
     return (
       <div className="game">
+        <div className="game-scoreboard">
+        <ScoreBoard wordsWithScore = {this.state.wordsWithScore} />
+        </div>
         <div className="game-board">
           <Board
           letters = {this.state.board}
