@@ -14,9 +14,24 @@ body {
   user-select: none;
 }
 
-.container {
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.wrapper {
+  position: relative;
   width: 1000px;
-  margin: 0 auto;
+  height: 100%;
+  background: #B49082;
+}
+
+.game {
+}
+
+.game-scoreboard {
 }
 
 .square {

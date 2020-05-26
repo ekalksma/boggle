@@ -81,10 +81,6 @@ export default class Game extends React.Component {
           letters = {this.state.board}
           onSelectWord = {this.handleSelection.bind(this)} />
         </div>
-        <div className="game-info">
-          <div></div>
-          <ol></ol>
-        </div>
       </div>
     );
   }
